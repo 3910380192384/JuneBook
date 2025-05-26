@@ -1,1 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Club Elimination Voting</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f7f1;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .instructions {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+        }
+        .voter-info {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .voter-info input {
+            padding: 8px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .book-card {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .book-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .book-card.selected {
+            border-color: #3498db;
+            background-color: #e8f4f8;
+        }
+        .book-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        .book-author {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+        .book-reason {
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 8px;
+        }
+        .nominator {
+            font-size: 12px;
+            color: #888;
+        }
+        .vote-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .vote-counter.warning {
+            background-color: #e74c3c;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        .previous-winners {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffc107;
+        }
+        .previous-winners h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="vote-counter" id="vote-counter">0/6 selected</div>
+    
+    <h1>Book Club Elimination Voting</h1>
+    
+    <div class="instructions">
+        <h3>Elimination Voting Instructions:</h3>
+        <p><strong>Select 6 books you'd be interested in reading.</strong></p>
+        <p>This will help us narrow down from all nominations to a manageable final list for ranked choice voting.</p>
+        <p>Click on book cards to select/deselect them. Selected books will be highlighted in blue.</p>
+        <p><strong>Voting closes: [INSERT DATE]</strong></p>
+    </div>
 
+    <div class="previous-winners">
+        <h3>🏆 Previous Vote Winners (Automatically Included)</h3>
+        <p>These books from our previous vote will automatically be included in the final ranked choice vote:</p>
+        <ul>
+            <li><strong>Gone Girl</strong> by Gillian Flynn</li>
+            <li><strong>The Fellowship of the Ring</strong> by J.R.R. Tolkien</li>
+            <li><strong>Dark Matter</strong> by Blake Crouch</li>
+        </ul>
+    </div>
+
+    <div class="voter-info">
+        <label for="voter-name">Your Name:</label>
+        <input type="text" id="voter-name" placeholder="Enter your name" required>
+    </div>
+
+    <div class="books-grid" id="books-grid">
+        <!-- Books will be loaded here -->
+    </div>
+
+    <button id="submit-vote" disabled>Submit Elimination Vote</button>
+    
+    <div id="success-message" class="success-message">
+        Thank you for your elimination vote! Results will be announced soon.
+    </div>
+    
+    <div id="error-message" class="error-message">
+        There was an error submitting your vote. Please try again.
+    </div>
+
+    <script>
+        // Google Script Web App URL for elimination voting
+        const ELIMINATION_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+        
+        // Sample nominated books - replace with actual nominations from your system
+        const nominatedBooks = [
+            {
+                id: 1,
+                title: "The Seven Husbands of Evelyn Hugo",
+                author: "Taylor Jenkins Reid",
+                reason: "Engaging story about a reclusive Hollywood icon finally ready to tell her story. Great character development and plot twists.",
+                nominator: "Sarah"
+            },
+            {
+                id: 2,
+                title: "Educated",
+                author: "Tara Westover",
+                reason: "Powerful memoir about education and family. Really makes you think about different perspectives and experiences.",
+                nominator: "Mike"
+            },
+            {
+                id: 3,
+                title: "The Thursday Murder Club",
+                author: "Richard Osman",
+                reason: "Fun mystery with quirky characters in a retirement community. Light but engaging read.",
+                nominator: "Jessica"
+            },
+            {
+                id: 4,
+                title: "Klara and the Sun",
+                author: "Kazuo Ishiguro",
+                reason: "Beautiful story told from an AI's perspective. Ishiguro's writing is always thought-provoking.",
+                nominator: "David"
+            },
+            {
+                id: 5,
+                title: "The Midnight Library",
+                author: "Matt Haig",
+                reason: "Explores what-if scenarios in life. Great for book club discussions about choices and regrets.",
+                nominator: "Emma"
+            },
+            // Add more books as needed...
+        ];
+
+        let selectedBooks = new Set();
+        const maxSelections = 6;
+
+        // Initialize the page
+        function initializePage() {
+            displayBooks();
+            updateVoteCounter();
+            
+            document.getElementById('submit-vote').addEventListener('click', submitVote);
+            document.getElementById('voter-name').addEventListener('input', updateSubmitButton);
+        }
+
+        function displayBooks() {
+            const booksGrid = document.getElementById('books-grid');
+            booksGrid.innerHTML = '';
+
+            nominatedBooks.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.setAttribute('data-book-id', book.id);
+                
+                bookCard.innerHTML = `
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">${book.author}</div>
+                    <div class="book-reason">"${book.reason}"</div>
+                    <div class="nominator">Nominated by ${book.nominator}</div>
+                `;
+                
+                bookCard.addEventListener('click', () => toggleBookSelection(book.id, bookCard));
+                booksGrid.appendChild(bookCard);
+            });
+        }
+
+        function toggleBookSelection(bookId, cardElement) {
+            if (selectedBooks.has(bookId)) {
+                // Deselect
+                selectedBooks.delete(bookId);
+                cardElement.classList.remove('selected');
+            } else {
+                // Select (if under limit)
+                if (selectedBooks.size < maxSelections) {
+                    selectedBooks.add(bookId);
+                    cardElement.classList.add('selected');
+                } else {
+                    alert(`You can only select ${maxSelections} books. Deselect one first if you want to choose a different book.`);
+                }
+            }
+            
+            updateVoteCounter();
+            updateSubmitButton();
+        }
+
+        function updateVoteCounter() {
+            const counter = document.getElementById('vote-counter');
+            const count = selectedBooks.size;
+            counter.textContent = `${count}/${maxSelections} selected`;
+            
+            if (count === maxSelections) {
+                counter.classList.add('warning');
+            } else {
+                counter.classList.remove('warning');
+            }
+        }
+
+        function updateSubmitButton() {
+            const submitButton = document.getElementById('submit-vote');
+            const voterName = document.getElementById('voter-name').value.trim();
+            const hasSelections = selectedBooks.size > 0;
+            
+            submitButton.disabled = !(voterName && hasSelections);
+        }
+
+        function submitVote() {
+            const voterName = document.getElementById('voter-name').value.trim();
+            
+            if (!voterName) {
+                alert('Please enter your name before submitting your vote.');
+                return;
+            }
+            
+            if (selectedBooks.size === 0) {
+                alert('Please select at least one book before submitting.');
+                return;
+            }
+
+            const voteData = {
+                voter: voterName,
+                selectedBooks: Array.from(selectedBooks),
+                timestamp: new Date().toISOString()
+            };
+
+            const submitButton = document.getElementById('submit-vote');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            
+            fetch(ELIMINATION_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(voteData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Success:', result);
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+                submitButton.textContent = 'Vote Submitted';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('success-message').style.display = 'none';
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Elimination Vote';
+            });
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initializePage);
+    </script>
+</body>
+</html>
