@@ -1,1 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Club Nominations</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f7f1;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .instructions {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+        }
+        .nomination-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .book-nomination {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            height: 60px;
+            resize: vertical;
+        }
+        .char-count {
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+            margin-top: 2px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        .current-nominations {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .nomination-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .nomination-item:last-child {
+            border-bottom: none;
+        }
+        .book-title {
+            font-weight: bold;
+        }
+        .book-author {
+            color: #666;
+            font-style: italic;
+        }
+        .book-reason {
+            margin-top: 5px;
+            color: #444;
+        }
+        .nominator {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Book Club Nominations</h1>
+    
+    <div class="instructions">
+        <h3>Nomination Instructions:</h3>
+        <p><strong>Each person can nominate up to 3 books.</strong></p>
+        <p>Please provide the book title, author, and a brief reason why you think the group would enjoy it.</p>
+        <p><strong>Nominations close: Monday, May 26th at 8 PM</strong></p>
+        <p>After nominations close, we'll have a quick elimination vote to narrow down to our final list!</p>
+    </div>
 
+    <div class="nomination-form">
+        <h2>Submit Your Nominations</h2>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="nominator-name">Your Name:</label>
+            <input type="text" id="nominator-name" placeholder="Enter your name" required>
+        </div>
+
+        <div class="book-nomination">
+            <h3>Book 1</h3>
+            <label for="book1-title">Book Title:</label>
+            <input type="text" id="book1-title" placeholder="Enter book title" required>
+            
+            <label for="book1-author">Author:</label>
+            <input type="text" id="book1-author" placeholder="Enter author name" required>
+            
+            <label for="book1-reason">Why this book? (1-2 sentences):</label>
+            <textarea id="book1-reason" placeholder="Brief reason why you think the group would enjoy this book..." maxlength="200" required></textarea>
+            <div class="char-count" id="book1-count">0/200 characters</div>
+        </div>
+
+        <div class="book-nomination">
+            <h3>Book 2</h3>
+            <label for="book2-title">Book Title:</label>
+            <input type="text" id="book2-title" placeholder="Enter book title" required>
+            
+            <label for="book2-author">Author:</label>
+            <input type="text" id="book2-author" placeholder="Enter author name" required>
+            
+            <label for="book2-reason">Why this book? (1-2 sentences):</label>
+            <textarea id="book2-reason" placeholder="Brief reason why you think the group would enjoy this book..." maxlength="200" required></textarea>
+            <div class="char-count" id="book2-count">0/200 characters</div>
+        </div>
+
+        <div class="book-nomination">
+            <h3>Book 3</h3>
+            <label for="book3-title">Book Title:</label>
+            <input type="text" id="book3-title" placeholder="Enter book title" required>
+            
+            <label for="book3-author">Author:</label>
+            <input type="text" id="book3-author" placeholder="Enter author name" required>
+            
+            <label for="book3-reason">Why this book? (1-2 sentences):</label>
+            <textarea id="book3-reason" placeholder="Brief reason why you think the group would ensure this book..." maxlength="200" required></textarea>
+            <div class="char-count" id="book3-count">0/200 characters</div>
+        </div>
+
+        <button id="submit-nominations">Submit Nominations</button>
+        
+        <div id="success-message" class="success-message">
+            Thank you for your nominations! They have been recorded.
+        </div>
+        
+        <div id="error-message" class="error-message">
+            There was an error submitting your nominations. Please try again.
+        </div>
+    </div>
+
+    <div class="current-nominations">
+        <h2>Current Nominations</h2>
+        <p><em>Nominations will appear here as they're submitted...</em></p>
+        <div id="nominations-list">
+            <!-- Nominations will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Google Script Web App URL for nominations
+        const NOMINATIONS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKf9-t82EUOvqu12Rq702i3mC5qY83WLyn5q2ZAZxrVABSjw4AOcMbP-WptrJ_zekN/exec';
+        
+        // Character count functionality
+        ['book1', 'book2', 'book3'].forEach(bookNum => {
+            const textarea = document.getElementById(`${bookNum}-reason`);
+            const counter = document.getElementById(`${bookNum}-count`);
+            
+            textarea.addEventListener('input', function() {
+                const count = this.value.length;
+                counter.textContent = `${count}/200 characters`;
+                
+                if (count > 180) {
+                    counter.style.color = '#e74c3c';
+                } else {
+                    counter.style.color = '#666';
+                }
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('submit-nominations').addEventListener('click', function() {
+            const nominatorName = document.getElementById('nominator-name').value.trim();
+            
+            if (!nominatorName) {
+                alert('Please enter your name before submitting nominations.');
+                return;
+            }
+            
+            const nominations = [];
+            let allValid = true;
+            
+            // Collect nominations
+            for (let i = 1; i <= 3; i++) {
+                const title = document.getElementById(`book${i}-title`).value.trim();
+                const author = document.getElementById(`book${i}-author`).value.trim();
+                const reason = document.getElementById(`book${i}-reason`).value.trim();
+                
+                if (title && author && reason) {
+                    nominations.push({
+                        title: title,
+                        author: author,
+                        reason: reason
+                    });
+                } else if (title || author || reason) {
+                    // Partial entry - require all fields
+                    alert(`Please complete all fields for Book ${i} or leave them all blank.`);
+                    allValid = false;
+                    break;
+                }
+            }
+            
+            if (!allValid) return;
+            
+            if (nominations.length === 0) {
+                alert('Please nominate at least one book.');
+                return;
+            }
+            
+            const submissionData = {
+                nominator: nominatorName,
+                nominations: nominations,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Submit to Google Script
+            submitNominations(submissionData);
+        });
+
+        function submitNominations(data) {
+            const submitButton = document.getElementById('submit-nominations');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            
+            fetch(NOMINATIONS_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Success:', result);
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+                
+                // Clear form
+                document.getElementById('nominator-name').value = '';
+                for (let i = 1; i <= 3; i++) {
+                    document.getElementById(`book${i}-title`).value = '';
+                    document.getElementById(`book${i}-author`).value = '';
+                    document.getElementById(`book${i}-reason`).value = '';
+                }
+                
+                submitButton.textContent = 'Nominations Submitted';
+                
+                // Refresh nominations list
+                loadNominations();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('success-message').style.display = 'none';
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Nominations';
+            });
+        }
+
+        function loadNominations() {
+            // This would load existing nominations from your Google Sheet
+            // For now, it's a placeholder
+            const nominationsList = document.getElementById('nominations-list');
+            nominationsList.innerHTML = '<p><em>Loading nominations...</em></p>';
+        }
+
+        // Load nominations on page load
+        window.addEventListener('load', loadNominations);
+    </script>
+</body>
+</html>
