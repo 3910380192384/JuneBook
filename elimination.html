@@ -41,7 +41,7 @@
         }
         .books-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
@@ -75,6 +75,7 @@
             font-size: 14px;
             color: #444;
             margin-bottom: 8px;
+            line-height: 1.4;
         }
         .nominator {
             font-size: 12px;
@@ -143,16 +144,16 @@
     </style>
 </head>
 <body>
-    <div class="vote-counter" id="vote-counter">0/6 selected</div>
+    <div class="vote-counter" id="vote-counter">0/7 selected</div>
     
     <h1>Book Club Elimination Voting</h1>
     
     <div class="instructions">
         <h3>Elimination Voting Instructions:</h3>
-        <p><strong>Select 6 books you'd be interested in reading.</strong></p>
-        <p>This will help us narrow down from all nominations to a manageable final list for ranked choice voting.</p>
+        <p><strong>Select 7 books you'd be interested in reading.</strong></p>
+        <p>This will help us narrow down from all 14 nominations to a manageable final list for ranked choice voting.</p>
         <p>Click on book cards to select/deselect them. Selected books will be highlighted in blue.</p>
-        <p><strong>Voting closes: [INSERT DATE]</strong></p>
+        <p><strong>Voting closes: Tuesday, May 26th at 8 PM</strong></p>
     </div>
 
     <div class="previous-winners">
@@ -186,50 +187,98 @@
 
     <script>
         // Google Script Web App URL for elimination voting
-        const ELIMINATION_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKf9-t82EUOvqu12Rq702i3mC5qY83WLyn5q2ZAZxrVABSjw4AOcMbP-WptrJ_zekN/exec';
+        const ELIMINATION_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
         
-        // Sample nominated books - replace with actual nominations from your system
+        // Your actual nominated books from the submissions
         const nominatedBooks = [
             {
                 id: 1,
-                title: "The Seven Husbands of Evelyn Hugo",
-                author: "Taylor Jenkins Reid",
-                reason: "Engaging story about a reclusive Hollywood icon finally ready to tell her story. Great character development and plot twists.",
-                nominator: "Sarah"
+                title: "This Is How You Lose the Time War",
+                author: "Max Gladstone, Amal El-Mohtar",
+                reason: "This book blends the thrill of epic rivalries with the tender complexity of forbidden love across the vast canvas of time and space.",
+                nominator: "Brian"
             },
             {
                 id: 2,
-                title: "Educated",
-                author: "Tara Westover",
-                reason: "Powerful memoir about education and family. Really makes you think about different perspectives and experiences.",
-                nominator: "Mike"
+                title: "Song of Solomon",
+                author: "Toni Morrison",
+                reason: "A profound, emotionally layered exploration of identity and heritage through a blend of lyrical prose and rich, inter generational storytelling.",
+                nominator: "Brian"
             },
             {
                 id: 3,
-                title: "The Thursday Murder Club",
-                author: "Richard Osman",
-                reason: "Fun mystery with quirky characters in a retirement community. Light but engaging read.",
-                nominator: "Jessica"
+                title: "The Fraud",
+                author: "Zadie Smith",
+                reason: "Intricately layered historical narratives that interrogate societal hypocrisies and human complexities through morally ambiguous characters and real-world parallels.",
+                nominator: "Brian"
             },
             {
                 id: 4,
-                title: "Klara and the Sun",
-                author: "Kazuo Ishiguro",
-                reason: "Beautiful story told from an AI's perspective. Ishiguro's writing is always thought-provoking.",
-                nominator: "David"
+                title: "Project Hail Mary",
+                author: "Andy Weir",
+                reason: "This book sounds like a wild ride from the description. I've heard a lot of good things about it. It's also going to be a feature film soon starring Ryan Gosling.",
+                nominator: "Matt"
             },
             {
                 id: 5,
-                title: "The Midnight Library",
-                author: "Matt Haig",
-                reason: "Explores what-if scenarios in life. Great for book club discussions about choices and regrets.",
-                nominator: "Emma"
+                title: "Daisy Jones and the Six",
+                author: "Taylor Jenkins Reid",
+                reason: "Honestly I really liked the show, and I think the fake documentary in a book format sounds really cool.",
+                nominator: "Matt"
             },
-            // Add more books as needed...
+            {
+                id: 6,
+                title: "Annihilation",
+                author: "Jeff VanderMeer",
+                reason: "This was nominated last time by someone else, but it didn't make the cut. I really do think this book sounds interesting. It is the first book in a series, but it sounds fun.",
+                nominator: "Matt"
+            },
+            {
+                id: 7,
+                title: "The Song of Achilles",
+                author: "Madeline Miller",
+                reason: "Pride month",
+                nominator: "Scott"
+            },
+            {
+                id: 8,
+                title: "Magic's Pawn",
+                author: "Mercedes Lackey",
+                reason: "Pride month. Sad boy MC. 90's queer fantasy.",
+                nominator: "Scott"
+            },
+            {
+                id: 9,
+                title: "The Moth Keeper",
+                author: "K. O'Neil",
+                reason: "Pride month",
+                nominator: "Scott"
+            },
+            {
+                id: 10,
+                title: "The One",
+                author: "John Marrs",
+                reason: "I saw the movie version of this book many years ago and on occasion I still ponder what the potential implications would be in a world where this technology existed.",
+                nominator: "James"
+            },
+            {
+                id: 11,
+                title: "Guards Guards!",
+                author: "Terry Pratchett",
+                reason: "A humor fantasy book from an author that frequently pokes fun at and satirizes fantasy literature. (376 pages. Published 1989)",
+                nominator: "Sam Sotrop"
+            },
+            {
+                id: 12,
+                title: "Slow Horses",
+                author: "Mick Herron",
+                reason: "This is the book source for Apple's TV show \"Slow Horses\" of the same name. Supposedly, the entire first season is covered in this book (334 pages. Published 2010)",
+                nominator: "Sam Sotrop"
+            }
         ];
 
         let selectedBooks = new Set();
-        const maxSelections = 6;
+        const maxSelections = 7;
 
         // Initialize the page
         function initializePage() {
