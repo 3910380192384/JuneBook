@@ -41,7 +41,7 @@
         }
         .books-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
@@ -49,37 +49,94 @@
             background-color: #fff;
             border: 2px solid #ddd;
             border-radius: 8px;
-            padding: 15px;
+            padding: 20px;
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
         .book-card:hover {
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
         }
         .book-card.selected {
             border-color: #3498db;
             background-color: #e8f4f8;
         }
+        .book-card.selected::before {
+            content: "✓";
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: #3498db;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
         .book-title {
             font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 5px;
+            font-size: 18px;
+            margin-bottom: 6px;
             color: #2c3e50;
         }
         .book-author {
-            color: #666;
+            color: #7f8c8d;
             font-style: italic;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            font-size: 15px;
         }
         .book-reason {
             font-size: 14px;
             color: #444;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            font-style: italic;
+        }
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .book-links {
             margin-bottom: 8px;
-            line-height: 1.4;
+        }
+        .storygraph-link {
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 4px 8px;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .storygraph-link:hover {
+            background-color: #3498db;
+            color: white;
         }
         .nominator {
             font-size: 12px;
-            color: #888;
+            color: #95a5a6;
+            font-weight: 500;
+        }
+        .genre-tags {
+            margin-bottom: 8px;
+        }
+        .genre-tag {
+            display: inline-block;
+            background-color: #f8f9fa;
+            color: #6c757d;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-right: 4px;
+            border: 1px solid #e9ecef;
         }
         .vote-counter {
             position: fixed;
@@ -187,93 +244,117 @@
 
     <script>
         // Google Script Web App URL for elimination voting
-        const ELIMINATION_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+        const ELIMINATION_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKf9-t82EUOvqu12Rq702i3mC5qY83WLyn5q2ZAZxrVABSjw4AOcMbP-WptrJ_zekN/exec';
         
-        // Your actual nominated books from the submissions
+        // Your actual nominated books from the submissions with genre tags
         const nominatedBooks = [
             {
                 id: 1,
                 title: "This Is How You Lose the Time War",
                 author: "Max Gladstone, Amal El-Mohtar",
                 reason: "This book blends the thrill of epic rivalries with the tender complexity of forbidden love across the vast canvas of time and space.",
-                nominator: "Brian"
+                nominator: "Brian",
+                storygraph: "https://app.thestorygraph.com/books/97d777d8-a679-4bc3-977f-16b945d1960d",
+                genres: ["Sci-Fi", "Romance", "LGBTQ+"]
             },
             {
                 id: 2,
                 title: "Song of Solomon",
                 author: "Toni Morrison",
                 reason: "A profound, emotionally layered exploration of identity and heritage through a blend of lyrical prose and rich, inter generational storytelling.",
-                nominator: "Brian"
+                nominator: "Brian",
+                storygraph: "https://app.thestorygraph.com/books/14fc6a0c-ec06-403e-b52b-c52b68039a5e",
+                genres: ["Literary Fiction", "Classic"]
             },
             {
                 id: 3,
                 title: "The Fraud",
                 author: "Zadie Smith",
                 reason: "Intricately layered historical narratives that interrogate societal hypocrisies and human complexities through morally ambiguous characters and real-world parallels.",
-                nominator: "Brian"
+                nominator: "Brian",
+                storygraph: "https://app.thestorygraph.com/books/ce1b4e71-8d1c-4efc-aa81-22dc6d6b12c3",
+                genres: ["Historical Fiction", "Literary Fiction"]
             },
             {
                 id: 4,
                 title: "Project Hail Mary",
                 author: "Andy Weir",
                 reason: "This book sounds like a wild ride from the description. I've heard a lot of good things about it. It's also going to be a feature film soon starring Ryan Gosling.",
-                nominator: "Matt"
+                nominator: "Matt",
+                storygraph: "https://app.thestorygraph.com/books/0d8b9c7a-ad35-495f-b6bf-4b52f42b5e95",
+                genres: ["Sci-Fi", "Adventure", "Hard Sci-Fi"]
             },
             {
                 id: 5,
                 title: "Daisy Jones and the Six",
                 author: "Taylor Jenkins Reid",
                 reason: "Honestly I really liked the show, and I think the fake documentary in a book format sounds really cool.",
-                nominator: "Matt"
+                nominator: "Matt",
+                storygraph: "https://app.thestorygraph.com/books/ae1b7b5b-12e3-4b4c-af6b-5bd2b7d8b4a6",
+                genres: ["Contemporary Fiction", "Music", "70s Setting"]
             },
             {
                 id: 6,
                 title: "Annihilation",
                 author: "Jeff VanderMeer",
                 reason: "This was nominated last time by someone else, but it didn't make the cut. I really do think this book sounds interesting. It is the first book in a series, but it sounds fun.",
-                nominator: "Matt"
+                nominator: "Matt",
+                storygraph: "https://app.thestorygraph.com/books/b8b6aeea-3f09-4c86-9b07-7bd9c4c5a3f7",
+                genres: ["Weird Fiction", "Horror", "Sci-Fi"]
             },
             {
                 id: 7,
                 title: "The Song of Achilles",
                 author: "Madeline Miller",
                 reason: "Pride month",
-                nominator: "Scott"
+                nominator: "Scott",
+                storygraph: "https://app.thestorygraph.com/books/81b44eba-3b9c-4b3b-b0a9-46d7b1e1de5e",
+                genres: ["Historical Fiction", "LGBTQ+", "Greek Mythology"]
             },
             {
                 id: 8,
                 title: "Magic's Pawn",
                 author: "Mercedes Lackey",
                 reason: "Pride month. Sad boy MC. 90's queer fantasy.",
-                nominator: "Scott"
+                nominator: "Scott",
+                storygraph: "https://app.thestorygraph.com/books/5f5bd3d3-0e44-4b5f-835a-d56e12a7b8c2",
+                genres: ["Fantasy", "LGBTQ+", "90s Fantasy"]
             },
             {
                 id: 9,
                 title: "The Moth Keeper",
                 author: "K. O'Neil",
                 reason: "Pride month",
-                nominator: "Scott"
+                nominator: "Scott",
+                storygraph: "https://app.thestorygraph.com/books/f3e3a15c-8f2f-4c3b-ba72-6b3c8e7a9d2f",
+                genres: ["Graphic Novel", "LGBTQ+", "Fantasy"]
             },
             {
                 id: 10,
                 title: "The One",
                 author: "John Marrs",
                 reason: "I saw the movie version of this book many years ago and on occasion I still ponder what the potential implications would be in a world where this technology existed.",
-                nominator: "James"
+                nominator: "James",
+                storygraph: "https://app.thestorygraph.com/books/1f8d1a5b-2c4e-4e9b-bd82-7e2f5b8c9d3a",
+                genres: ["Thriller", "Sci-Fi", "Dystopian"]
             },
             {
                 id: 11,
                 title: "Guards Guards!",
                 author: "Terry Pratchett",
                 reason: "A humor fantasy book from an author that frequently pokes fun at and satirizes fantasy literature. (376 pages. Published 1989)",
-                nominator: "Sam Sotrop"
+                nominator: "Sam Sotrop",
+                storygraph: "https://app.thestorygraph.com/books/0a5c3e3f-7b9c-4d6e-8f2a-9b1e3c5d7f8g",
+                genres: ["Fantasy", "Comedy", "Satire"]
             },
             {
                 id: 12,
                 title: "Slow Horses",
                 author: "Mick Herron",
                 reason: "This is the book source for Apple's TV show \"Slow Horses\" of the same name. Supposedly, the entire first season is covered in this book (334 pages. Published 2010)",
-                nominator: "Sam Sotrop"
+                nominator: "Sam Sotrop",
+                storygraph: "https://app.thestorygraph.com/books/2d5f8a1b-4c7e-4f9a-9e3b-6d8f2a5c9b1e",
+                genres: ["Thriller", "Spy Fiction", "British Crime"]
             }
         ];
 
@@ -293,7 +374,10 @@
             const booksGrid = document.getElementById('books-grid');
             booksGrid.innerHTML = '';
 
-            nominatedBooks.forEach(book => {
+            // Shuffle the books to randomize order
+            const shuffledBooks = [...nominatedBooks].sort(() => Math.random() - 0.5);
+
+            shuffledBooks.forEach(book => {
                 const bookCard = document.createElement('div');
                 bookCard.className = 'book-card';
                 bookCard.setAttribute('data-book-id', book.id);
@@ -301,8 +385,16 @@
                 bookCard.innerHTML = `
                     <div class="book-title">${book.title}</div>
                     <div class="book-author">${book.author}</div>
+                    <div class="genre-tags">
+                        ${book.genres.map(genre => `<span class="genre-tag">${genre}</span>`).join('')}
+                    </div>
                     <div class="book-reason">"${book.reason}"</div>
-                    <div class="nominator">Nominated by ${book.nominator}</div>
+                    <div class="book-meta">
+                        <div class="nominator">Nominated by ${book.nominator}</div>
+                        <div class="book-links">
+                            <a href="${book.storygraph}" target="_blank" class="storygraph-link">📚 StoryGraph</a>
+                        </div>
+                    </div>
                 `;
                 
                 bookCard.addEventListener('click', () => toggleBookSelection(book.id, bookCard));
